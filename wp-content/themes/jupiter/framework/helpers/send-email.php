@@ -32,17 +32,19 @@ class Mk_Send_Mail
     /**
      * Ajax action to send email
      *
-     * @copyright	ArtbeesLTD (c)
-     * @link		http://artbees.net
-     * @since		Version 5.0.10
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.0.10
      * @last_update Version 5.0.10
-     * @package		artbees
-     * @author		Bob Ulusoy
+     * @package     artbees
+     * @author      Bob Ulusoy
      */
     function send_form()
     {
         
         check_ajax_referer('mk-contact-form-security', 'security');
+
+        add_filter( 'wp_mail_charset', array(&$this, 'default_mail_charset') );
         
         
         $sitename = get_bloginfo('name');
@@ -55,27 +57,27 @@ class Mk_Send_Mail
         }
         
         $form_email = $this->from_email();
-        $send_to 	= $this->get_contact_form_email(trim($_POST['p_id']), trim($_POST['sh_id']));
-        $name 		= isset($_POST['name']) ? trim($_POST['name']) : '';
-        $last_name 	= isset($_POST['last_name']) ? trim($_POST['last_name']) : '';
-        $phone 		= isset($_POST['phone']) ? trim($_POST['phone']) : '';
-        $email 		= isset($_POST['email']) ? trim($_POST['email']) : '';
-        $website 	= isset($_POST['website']) ? trim($_POST['website']) : '';
-        $content 	= isset($_POST['content']) ? trim($_POST['content']) : '';
+        $send_to    = $this->get_contact_form_email(trim($_POST['p_id']), trim($_POST['sh_id']));
+        $name       = isset($_POST['name']) ? trim($_POST['name']) : '';
+        $last_name  = isset($_POST['last_name']) ? trim($_POST['last_name']) : '';
+        $phone      = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+        $email      = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $website    = isset($_POST['website']) ? trim($_POST['website']) : '';
+        $content    = isset($_POST['content']) ? trim($_POST['content']) : '';
         
         $error = false;
         
         if ($send_to === '' || $email === '' || $content === '' || $name === '') {
-            $error = true;
+            $error .= __(" - One of the fields are empty" , 'mk_framework') . "<br>";
         }
         
-        if (!preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $email)) {
-            $error = true;
+        if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $error .= __(" - 'Email' field seems not to be an email." , 'mk_framework'). "<br>";
         }
         
         
-        if (!preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $send_to)) {
-            $error = true;
+        if (!empty($send_to) && filter_var($send_to, FILTER_VALIDATE_EMAIL) === false) {
+            $error .= __(" - 'Send To' field seems not to be an email." , 'mk_framework'). "<br>";
         }
         
         if ($error == false) {
@@ -100,12 +102,28 @@ class Mk_Send_Mail
             $headers .= "Reply-To: $email\r\n";
             
             if (wp_mail($send_to, $subject, $body, $headers)) {
-                echo 'Email sent!';
+                        echo json_encode( 
+                                    array(
+                                        'action_Status' => true,
+                                        'message' => __('Email sent!', 'mk_framework')
+                                    )
+                                );
             } else {
-                echo 'Email could not be sent!';
+                        echo json_encode( 
+                                    array(
+                                        'action_Status' => false,
+                                        'message' => __('Email could not be sent! There is an issue with mail server!', 'mk_framework')
+                                    )
+                                );
             }
         } else {
-            echo 'Error(s) occured!';
+                echo json_encode( 
+                        array(
+                            'action_Status' => false,
+                            'message' => $error
+                        )
+                    );
+
         }
         
         wp_die();
@@ -115,12 +133,12 @@ class Mk_Send_Mail
     /**
      * Returns the email address which will look like wordpress@domain.com
      *
-     * @copyright	ArtbeesLTD (c)
-     * @link		http://artbees.net
-     * @since		Version 5.0.10
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.0.10
      * @last_update Version 5.0.10
-     * @package		artbees
-     * @author		Bob Ulusoy
+     * @package     artbees
+     * @author      Bob Ulusoy
      */
     function from_email()
     {
@@ -147,12 +165,12 @@ class Mk_Send_Mail
     /**
      * Updates email address into database if its changed.
      *
-     * @copyright	ArtbeesLTD (c)
-     * @link		http://artbees.net
-     * @since		Version 5.0.10
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.0.10
      * @last_update Version 5.0.10
-     * @package		artbees
-     * @author		Bob Ulusoy
+     * @package     artbees
+     * @author      Bob Ulusoy
      */
     public static function update_contact_form_email($p_id, $sh_id, $email)
     {
@@ -169,17 +187,34 @@ class Mk_Send_Mail
     /**
      * Get email address stored for specific shortcode/widget in spcific page
      *
-     * @copyright	ArtbeesLTD (c)
-     * @link		http://artbees.net
-     * @since		Version 5.0.10
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.0.10
      * @last_update Version 5.0.10
-     * @package		artbees
-     * @author		Bob Ulusoy
+     * @package     artbees
+     * @author      Bob Ulusoy
      */
     function get_contact_form_email($p_id, $sh_id)
     {
         
         return get_option('contact-email-' . $p_id . '-' . $sh_id);
+    }
+
+
+    /**
+     * The default character encoding for wp_mail() is UTF-8. We add this function to make sure its not something else.
+     *
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.1
+     * @last_update Version 5.1
+     * @package     artbees
+     * @author      Bob Ulusoy
+     */
+    function default_mail_charset( $charset ) {
+        
+        return 'UTF-8';
+        
     }
     
     
@@ -187,12 +222,12 @@ class Mk_Send_Mail
     /**
      * Outputs some hidden inputs for contact forms to have post id and shortcode id to be sent to admin-ajax.
      *
-     * @copyright	ArtbeesLTD (c)
-     * @link		http://artbees.net
-     * @since		Version 5.0.10
+     * @copyright   ArtbeesLTD (c)
+     * @link        http://artbees.net
+     * @since       Version 5.0.10
      * @last_update Version 5.0.10
-     * @package		artbees
-     * @author		Bob Ulusoy
+     * @package     artbees
+     * @author      Bob Ulusoy
      */
     public static function contact_form_hidden_values($sh_id, $p_id)
     {
@@ -201,6 +236,7 @@ class Mk_Send_Mail
         
         return $output;
     }
+
     
 }
 

@@ -121,6 +121,13 @@ $blog_section[] = array(
             "type" => "toggle"
         ) ,
         array(
+            "name" => __("Show Previous & Next for Same Categories?", "mk_framework") ,
+            "desc" => __("If enabled, the same categories in adjacent posts will be shown.", "mk_framework") ,
+            "id" => "blog_prev_next_same_category",
+            "default" => 'true',
+            "type" => "toggle"
+        ) ,
+        array(
             "name" => __("About Author Box", "mk_framework") ,
             "desc" => __("You can enable or disable the about author box from here. You can modify about author information from your profile settings. Besides, if you add your website URL, your email address and twitter account from extra profile information they will be displayed as an icon link.", "mk_framework") ,
             "id" => "enable_blog_author",

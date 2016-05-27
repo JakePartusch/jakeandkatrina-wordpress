@@ -141,7 +141,7 @@ if (!class_exists('Mk_Options_Framework_Fields_Social_Share')) {
                             })
                         })
                     </script>";
-            $output .= '<style>'.mk_enqueue_font_icons().'</style>';
+             $output .= '<style>'.mk_enqueue_font_icons().'</style>';
             return parent::field_wrapper($this->id, $this->name, $this->description, $output, parent::dependency_builder($this->dependency));
         }
         

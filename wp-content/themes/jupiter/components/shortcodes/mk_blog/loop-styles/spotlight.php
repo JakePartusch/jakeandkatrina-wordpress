@@ -45,28 +45,15 @@ switch ($view_params['column']) {
     $attachment_id = mk_get_blog_post_thumbnail($post_type);
 
 
-
-    if ($view_params['image_size'] == 'crop') {
-        $image_src_array = wp_get_attachment_image_src($attachment_id, 'full', true); 
-        $image_output_src = mk_image_generator($image_src_array[0], $image_width, $image_height);
-    } 
-    else {
-        if(!empty($attachment_id) && !mk_is_default_thumbnail(wp_get_attachment_image_src($attachment_id, 'full', true)[0])) {
-            $image_src_array = wp_get_attachment_image_src($attachment_id , $view_params['image_size'], true); 
-            $image_output_src = $image_src_array[0];
-            $image_width = $image_src_array[1];
-            $image_height = $image_src_array[2];    
-        } else {
-            $image_output_src = mk_image_generator('', $image_width, $image_height);
-        }
-    }
+    $featured_image_src = Mk_Image_Resize::resize_by_id_adaptive($attachment_id, $view_params['image_size'], $image_width, $image_width, $crop = true, $dummy = true);
+    $image_size_atts = Mk_Image_Resize::get_image_dimension_attr($attachment_id, $view_params['image_size'], $image_width, $image_width);
 
 
 //if (!empty($attachment_id)) {
    
     $output = '<article id="' . get_the_ID() . '" class="mk-blog-spotlight-item '.$post_type.'-post-type mk-isotop-item ' . $mk_column_css . ' ' . $post_type . '-post-type">' . "\n";
     $output.= '<div class="featured-image">';
-    $output.= '<img alt="' . the_title_attribute(array('echo' => false)) . '" title="' . the_title_attribute(array('echo' => false)) . '" src="' . $image_output_src . '" itemprop="image" />';
+    $output.= '<img alt="' . the_title_attribute(array('echo' => false)) . '" title="' . the_title_attribute(array('echo' => false)) . '" src="'.$featured_image_src['dummy'].'" '.$featured_image_src['data-set'].' width="'.esc_attr($image_size_atts['width']).'" height="'.esc_attr($image_size_atts['height']).'" itemprop="image" />';
     $output.= '<div class="image-hover-overlay"></div>';
     
     // start:[item-wrapper]

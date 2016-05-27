@@ -1,5 +1,5 @@
 
-<div class="mk-form-row clear">
+<div class="mk-form-row clearfix">
 
     <div class="mk-form-half s_form-all">
         <input type="text" required="required" name="contact_name" id="contact_name" class="text-input s_txt-input" value="" tabindex="<?php echo $view_params['id']++; ?>" />
@@ -20,7 +20,7 @@
 </div>
 
 
-<div class="mk-form-row clear">
+<div class="mk-form-row clearfix">
 
     <div class="<?php echo (($view_params['phone'] == 'true')? 'mk-form-third s_form-all' : 'mk-form-half s_form-all'); ?>">
         <input type="email" required="required" name="contact_email" id="contact_email" class="text-input s_txt-input" tabindex="<?php echo $view_params['id']++; ?>" />
@@ -48,7 +48,7 @@
 </div>
 
 
-<div class="mk-form-row">
+<div class="mk-form-row clearfix">
 
     <div class="mk-form-full s_form-all">
         <textarea required="required" name="contact_content" class="mk-textarea s_txt-input" tabindex="<?php echo $view_params['id']++; ?>"></textarea>

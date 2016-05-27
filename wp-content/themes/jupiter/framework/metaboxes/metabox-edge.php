@@ -6,7 +6,7 @@ $config = array(
         'edge'
     ) ,
     'callback' => '',
-    'context' => 'normal',
+    'context' => 'normal', 
     'priority' => 'core'
 );
 $options = array(
@@ -105,6 +105,21 @@ $options = array(
         "name" => __("Upload Image", "mk_framework") ,
         "desc" => __("Upload slideshow image. Image will fit to the container size however for better quality in all browsers recommded size is 1920px * 1080px.", "mk_framework") ,
         "id" => "_slide_image",
+        "default" => '',
+        "preview" => true,
+        "type" => 'upload',
+        "dependency" => array(
+            'element' => "_edge_type",
+            'value' => array(
+                'image',
+            )
+        ) ,
+    ) ,
+    
+    array(
+        "name" => __("Upload Portrait Image", "mk_framework") ,
+        "desc" => __("Alternatively, this image could be shown in mobile devices with portrait orientation. It is recommended to use images with portrait ratio such as 2:3.", "mk_framework") ,
+        "id" => "_slide_image_portrait",
         "default" => '',
         "preview" => true,
         "type" => 'upload',

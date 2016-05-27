@@ -11,6 +11,7 @@ $video_overlay =  get_post_meta( $post->ID, '_video_color_overlay', true );
 $overlay_opacity =  get_post_meta( $post->ID, '_overlay_opacity', true ) ? get_post_meta( $post->ID, '_overlay_opacity', true ) : 0.3;
 
 $slide_image =  get_post_meta( $post->ID, '_slide_image', true );
+$slide_image_portrait =  get_post_meta( $post->ID, '_slide_image_portrait', true );
 $slide_bg_color =  get_post_meta( $post->ID, '_bg_color', true );
 $cover_bg =  get_post_meta( $post->ID, '_cover', true );
 

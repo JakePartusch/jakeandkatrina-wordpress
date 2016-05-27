@@ -5,15 +5,16 @@
  *
  * @author      Artbees
  * @package     jupiter/views
- * @version     5.0.0
+ * @version     5.1
  */
 
 global $mk_options;
 
 if (mk_get_blog_single_style() != 'bold') return false;
 
-$hero_image_background = wp_get_attachment_image_src(get_post_thumbnail_id() , 'full')[0];
-$hero_image_background_css = (!mk_is_default_thumbnail($hero_image_background)) ? 'background-image:url('.$hero_image_background.');' : '';
+$image_array = wp_get_attachment_image_src(get_post_thumbnail_id() , 'full');
+$hero_image_background = $image_array[0];
+$hero_image_background_css = (!Mk_Image_Resize::is_default_thumb($hero_image_background)) ? 'background-image:url('.$hero_image_background.');' : '';
 
 
 $blog_type_theme_options = $mk_options['single_blog_style'];

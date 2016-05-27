@@ -320,11 +320,17 @@
 .mk-edge-slider .edge-skip-slider[data-skin="dark"] i {
   color: #333333;
 }
+.mk-edge-slider .edge-skip-slider[data-skin="dark"] .mk-svg-icon {
+  fill: #333333;
+}
 .mk-edge-slider .edge-skip-slider[data-skin="light"] {
   border: 2px solid #ffffff;
 }
 .mk-edge-slider .edge-skip-slider[data-skin="light"] i {
   color: #ffffff;
+}
+.mk-edge-slider .edge-skip-slider[data-skin="light"] .mk-svg-icon {
+  fill: #ffffff;
 }
 .mk-edge-slider[data-animation="perspective_flip"] {
   -webkit-perspective: 1000px;

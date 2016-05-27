@@ -120,12 +120,12 @@ $full_height = $full_height == 'true' ? true : false;
 							</div>
 
 						<?php } else { 
-							$bg_image_css = 'style="';
-							$bg_image_css .= !empty($slide_image) ? 'background-image: url('. $slide_image .'); ' : '';
+							$bg_image_css = 'style="'; 
 							$bg_image_css .= !empty($slide_bg_color) ? 'background-color:'. $slide_bg_color .'; ' : '';
-							$bg_image_css .= '"';
+							$bg_image_css .= '"'; 
+							$bg_image_set = (!empty($slide_image) || !empty($slide_image_portrait)) ? Mk_Image_Resize::get_bg_res_set($slide_image, $slide_image_portrait) : '';
 						?>
-							<div class="mk-section-image <?php echo $animation_effect ?>"  <?php echo $bg_image_css ?>></div>
+							<div class="mk-section-image <?php echo $animation_effect ?>"  <?php echo $bg_image_css .' '. $bg_image_set ?>></div>
 						<?php } ?>
 
 

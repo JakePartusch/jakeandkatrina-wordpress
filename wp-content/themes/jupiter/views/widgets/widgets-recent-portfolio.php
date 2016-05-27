@@ -95,7 +95,7 @@ class Artbees_Widget_Recent_Portfolio extends WP_Widget {
 				 			$post_type_link = 'http'.( is_ssl() ? 's' : '' ).'://www.dailymotion.com/video/'.$video_type_video_id;
 				 		}
 				 	}else{
-				 		$post_type_link_array = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full', true );
+				 		$post_type_link_array = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full');
 				 		$post_type_link = $post_type_link_array[0];
 				 	}
 				 ?>

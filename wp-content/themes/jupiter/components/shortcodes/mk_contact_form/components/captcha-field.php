@@ -1,3 +1,9 @@
+<?php
+
+// If captcha plugin is not active do not show captcha form
+if(!Mk_Theme_Captcha::is_plugin_active()) return false;
+
+?>
 <div class="mk-form-row">
 	<?php if(isset($view_params['show_icon'])) : ?>
 		<i class="mk-li-lock"></i>

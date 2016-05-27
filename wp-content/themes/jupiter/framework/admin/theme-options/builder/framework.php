@@ -28,7 +28,6 @@ class Mk_Options_Framework
     function render() {
         
         $saved_options = get_option(THEME_OPTIONS);
-        $theme_data =  wp_get_theme();
         ?>
         <div class="mk-options-container">
         <form action="" type="post" name="masterkey_settings" id="masterkey_settings">
@@ -79,7 +78,7 @@ class Mk_Options_Framework
                     </g>
                     </svg>
         
-        <span title="Theme Version" class="mk-theme-version"><strong>MasterKey</strong> version <?php echo $theme_data['Version']; ?></span></span>
+        <span title="Theme Version" class="mk-theme-version"><strong>MasterKey</strong> version <?php echo get_option('mk_jupiter_theme_current_version'); ?></span></span>
         
         <ul class="mk-main-navigator">
         
@@ -328,6 +327,30 @@ class Mk_Options_Framework
 
 
         return $output;
+    }
+
+
+    public static function get_post_types() {
+        $post_type = get_post_types();
+
+        unset(
+            $post_type['post'],
+            $post_type['page'],
+            $post_type['attachment'],
+            $post_type['nav_menu_item'],
+            $post_type['revision'],
+            $post_type['clients'],
+            $post_type['animated-columns'],
+            $post_type['edge'],
+            $post_type['portfolio'],
+            $post_type['shop_order'],
+            $post_type['shop_order_refund'],
+            $post_type['shop_coupon'],
+            $post_type['shop_webhook'],
+            $post_type['banner_builder'],
+            $post_type['banner_builder']
+            );
+        return $post_type;
     }
 
 }

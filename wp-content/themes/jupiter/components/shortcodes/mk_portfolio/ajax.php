@@ -41,6 +41,7 @@ class Mk_Ajax_Portfolio
             WPBMap::addAllMappedShortcodes();
         }
 
+
         if (empty($id)) return false;
         global $mk_options;
 
@@ -73,7 +74,8 @@ class Mk_Ajax_Portfolio
 
 
                 $image_src_array = wp_get_attachment_image_src(get_post_thumbnail_id() , 'full', true);
-                $image_src = mk_image_generator($image_src_array[0], $mk_options['grid_width'], $image_height);
+
+                $featured_image_src = Mk_Image_Resize::resize_by_id( get_post_thumbnail_id(), 'full', $mk_options['grid_width'], $image_height, $crop = false, $dummy = true);
                 
                 ?>
                 
@@ -117,7 +119,7 @@ class Mk_Ajax_Portfolio
                             if ($post_type == 'image') { ?>
                                 <div class="single-featured-image">
                                 <a class="mk-lightbox portfolio-modern-lightbox" data-fancybox-group="portfolio-ajax-image" title="<?php the_title_attribute(); ?>" href="<?php echo $image_src_array[0]; ?>">
-                                    <img alt="<?php the_title_attribute(); ?>" title="<?php the_title_attribute(); ?>" src="<?php echo $image_src; ?>" />
+                                    <img alt="<?php the_title_attribute(); ?>" title="<?php the_title_attribute(); ?>" src="<?php echo $featured_image_src; ?>" />
                                 </a>
                                 </div>
                             <?php } 

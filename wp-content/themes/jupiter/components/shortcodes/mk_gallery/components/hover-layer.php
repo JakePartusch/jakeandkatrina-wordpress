@@ -10,9 +10,9 @@ $image_title     = $view_params['collection_title'] ? $view_params['collection_t
 if($view_params['hover_scenarios'] == 'none') { 
 
     if (isset($link) && $link != '') { ?>
-        <a href="<?php echo $link; ?>" class="full-cover-link"></a>
+        <a href="<?php echo $link; ?>" class="full-cover-link">&nbsp</a>
     <?php } else { ?>
-        <a href="<?php echo wp_get_attachment_image_src($post->ID, 'full', true)[0]; ?>" alt="<?php echo $alt; ?>" title="<?php the_title_attribute(); ?>" data-fancybox-group="gallery-<?php echo $view_params['id']; ?>" class="mk-lightbox full-cover-link"></a>
+        <a href="<?php echo wp_get_attachment_image_src($post->ID, 'full', true)[0]; ?>" alt="<?php echo $alt; ?>" title="<?php the_title_attribute(); ?>" data-fancybox-group="gallery-<?php echo $view_params['id']; ?>" class="mk-lightbox full-cover-link">&nbsp</a>
     <?php }
 }
 ?>

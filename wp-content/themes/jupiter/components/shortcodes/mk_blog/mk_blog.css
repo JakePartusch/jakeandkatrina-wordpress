@@ -141,6 +141,20 @@
   content: "\f10d";
   font-size: 48px;
 }
+
+.mk-blog-classic-item.blockquote-post-type .blog-blockquote-content:before {
+  content: "\f10d";
+}
+.mk-blog-classic-item.blockquote-post-type .blog-blockquote-content .mk-svg-icon {
+  position: absolute;
+  top: 70px;
+  left: 40px;
+  display: block;
+  fill: #dddddd;
+  fill: rgba(0, 0, 0, 0.1);
+  width: 48px!important;
+  height: 48px!important;
+}
 .mk-blog-classic-item.blockquote-post-type .blog-blockquote-content footer {
   text-align: right;
   color: #999999;
@@ -628,14 +642,17 @@
   padding: 40px 25px 25px 80px;
 }
 .mk-blog-grid-item.blockquote-post-type .blog-grid-holder .blog-blockquote-content:before {
+  content: "\f10d";
+}
+.mk-blog-grid-item.blockquote-post-type .blog-grid-holder .blog-blockquote-content .mk-svg-icon {
   position: absolute;
   top: 50px;
   left: 25px;
   display: block;
-  color: #ddd;
-  color: rgba(0, 0, 0, 0.1);
-  content: "\f10d";
-  font-size: 48px;
+  fill: #ddd;
+  fill: rgba(0, 0, 0, 0.1);
+  width: 48px!important;
+  height: 48px!important;
 }
 .mk-blog-grid-item.blockquote-post-type .blog-grid-holder .blog-blockquote-content footer {
   text-align: right;
@@ -1022,14 +1039,17 @@
   display: none;
 }
 .mk-blog-modern-item.blockquote-post-type .blog-blockquote-content:before {
+  content: "\f10d";
+}
+.mk-blog-modern-item.blockquote-post-type .blog-blockquote-content .mk-svg-icon {
   position: absolute;
   top: 60px;
   left: 100px;
   display: block;
-  color: #dddddd;
-  color: rgba(0, 0, 0, 0.1);
-  content: "\f10d";
-  font-size: 48px;
+  fill: #dddddd;
+  fill: rgba(0, 0, 0, 0.1);
+  height: 48px!important;
+  width: 48px!important;
 }
 .mk-blog-modern-item.blockquote-post-type .blog-blockquote-content footer {
   text-align: right;

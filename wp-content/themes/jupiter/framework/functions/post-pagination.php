@@ -24,7 +24,7 @@ if (!function_exists('mk_theme_blog_pagenavi')) {
             'num_pages' => 8,
             'always_show' => 0,
             'num_larger_page_numbers' => 3,
-            'larger_page_numbers_multiple' => 10,
+            'larger_page_numbers_multiple' => 8,
             'use_pagenavi_css' => 0
         );
         
@@ -77,7 +77,7 @@ if (!function_exists('mk_theme_blog_pagenavi')) {
             echo '<div class="mk-pagination mk-grid">' . "\n";
             $previous_page_link = get_previous_posts_link('');  
             if($previous_page_link) {
-                echo '<div class="mk-pagination-previous">';
+                echo '<div class="mk-pagination-previous pagination-arrows ">';
                 echo $previous_page_link;
                 echo '</div>';
             }
@@ -118,7 +118,7 @@ if (!function_exists('mk_theme_blog_pagenavi')) {
             echo '</div>';
             $next_page_link = get_next_posts_link('', $max_page);    
             if($next_page_link) {
-                echo '<div class="mk-pagination-next">';
+                echo '<div class="mk-pagination-next pagination-arrows">';
                 echo $next_page_link;
                 echo '</div>';
             }

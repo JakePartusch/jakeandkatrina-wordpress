@@ -683,7 +683,9 @@ function pulse(x) {
  ***********************************************/
 
 var userAgent = window.navigator.userAgent;
+var isIE      = /Trident/.test(userAgent);
 var isEdge    = /Edge/.test(userAgent); // thank you MS
+var isIE      = /Trident/.test(userAgent);
 var isChrome  = /chrome/i.test(userAgent) && !isEdge; 
 var isSafari  = /safari/i.test(userAgent) && !isEdge; 
 var isMobile  = /mobile/i.test(userAgent);

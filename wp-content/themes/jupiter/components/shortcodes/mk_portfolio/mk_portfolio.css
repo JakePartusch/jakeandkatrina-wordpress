@@ -110,6 +110,10 @@
   color: #ffffff;
   line-height: 32px;
 }
+.mk-portfolio-classic-item .mk-svg-icon {
+  height: 32px!important;
+  width: 32px!important;
+}
 .mk-portfolio-classic-item .from-left {
   margin-left: -50px;
   right: auto;

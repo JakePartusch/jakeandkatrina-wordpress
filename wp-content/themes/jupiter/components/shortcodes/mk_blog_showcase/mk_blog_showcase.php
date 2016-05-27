@@ -41,7 +41,7 @@
 			$r->the_post();
 		$i++;
 
-	$image_src = wp_get_attachment_image_src( get_post_thumbnail_id(), 'blog-showcase', true )[0];
+	$featured_image_src = Mk_Image_Resize::resize_by_id_adaptive( get_post_thumbnail_id(), 'blog-showcase', 260, 180, $crop = true, $dummy = true);
 
 	$first_el_class = $i == 1 ? 'mk-blog-first-el' : '';
 
@@ -49,7 +49,7 @@
 	$output .= '<div class="mk-blog-showcase-thumb">
 					<div class="showcase-blog-overlay"></div>
 						<a href="'.get_permalink().'"><i class="mk-jupiter-icon-plus-circle"></i></a>
-						<img src="'.mk_image_generator($image_src, 260, 180).'" alt="'.the_title_attribute(array('echo' => false)).'" title="'.the_title_attribute(array('echo' => false)).'" />
+						<img src="'.$featured_image_src['dummy'].'" '.$featured_image_src['data-set'].' alt="'.the_title_attribute(array('echo' => false)).'" title="'.the_title_attribute(array('echo' => false)).'" />
 					</div>';
 	$output .= '<div class="blog-showcase-extra-info">';
 	$output .='<time datetime="'.get_the_date('Y-m-d').'">';

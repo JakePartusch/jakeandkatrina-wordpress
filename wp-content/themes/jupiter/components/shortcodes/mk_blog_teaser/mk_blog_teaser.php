@@ -58,15 +58,17 @@
                         $output .= '<article id="teaser-entry-' . get_the_ID() . '" class="blog-slideshow-entry swiper-slide">';
 
 
-                        $image_src_array = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full', true);
-                        $image_src       = bfi_thumb($image_src_array[0], array(
-                            'width' => $image_width,
-                            'height' => $image_height,
-                            'crop' => true
-                        ));
+                            $featured_image_src = Mk_Image_Resize::resize_by_id_adaptive(get_post_thumbnail_id(), 'crop', $image_width, $image_height, $crop = true, $dummy = true);
+
 
                             $output .= '<div class="thumb-featured-image"><a title="' .  the_title_attribute(array('echo' => false)) . '" href="' . get_permalink() . '">';
-                            $output .= '<img alt="' . the_title_attribute(array('echo' => false) . '" class="item-featured-image"  title="' . the_title_attribute(array('echo' => false) . '" src="' . mk_image_generator($image_src, $image_width, $image_height) . '" itemprop="image" />';
+                            $output .= '<img 
+                                                alt="' . the_title_attribute(array('echo' => false)) . '" 
+                                                class="item-featured-image"  
+                                                title="' . the_title_attribute(array('echo' => false)) . '" 
+                                                src="'.$featured_image_src['dummy'].'" 
+                                                '.$featured_image_src['data-set'].' 
+                                                itemprop="image" />';
                             $output .= '<div class="image-hover-overlay"></div>';
                             $output .= '</a></div>';
 
@@ -111,7 +113,7 @@
         $output .= '</div>';
 
 
-        $output .= '<img src="'. mk_image_generator('', $image_width, $image_height) .'" style="visibility: hidden;" />';
+        $output .= '<img src="'. Mk_Image_Resize::generate_dummy_image($image_width, $image_height, true) .'" style="visibility: hidden;" />';
 
     }
 
@@ -161,18 +163,20 @@
                         $output .= '<article id="entry-' . get_the_ID() . '" class="blog-teaser-side-item '.$item_class.'"><div class="item-holder">';
 
 
-                        $image_src_array = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full', true);
-                        $image_src       = bfi_thumb($image_src_array[0], array(
-                            'width' => $image_width,
-                            'height' => $image_height,
-                            'crop' => true
-                        ));
-                        //if (has_post_thumbnail()) {
-                            $output .= '<div class="thumb-featured-image"><a title="' . the_title_attribute(array('echo' => false) . '" href="' . get_permalink() . '">';
-                            $output .= '<img alt="' . the_title_attribute(array('echo' => false) . '" width="' . $image_width . '" class="item-featured-image" height="' . $image_height . '" title="' . the_title_attribute(array('echo' => false) . '" src="' . mk_image_generator($image_src, $image_width, $image_height) . '" itemprop="image" />';
+                            $featured_image_src       = Mk_Image_Resize::resize_by_id_adaptive(get_post_thumbnail_id(), 'crop', $image_width, $image_height, $crop = true, $dummy = true);
+                            
+                            $output .= '<div class="thumb-featured-image"><a title="' . the_title_attribute(array('echo' => false)) . '" href="' . get_permalink() . '">';
+                            $output .= '<img 
+                                            alt="' . the_title_attribute(array('echo' => false)) . '" 
+                                            width="' . $image_width . '" 
+                                            class="item-featured-image" 
+                                            height="' . $image_height . '" 
+                                            title="' . the_title_attribute(array('echo' => false)) . '" 
+                                            src="'.$featured_image_src['dummy'].'" 
+                                            '.$featured_image_src['data-set'].' 
+                                            itemprop="image" />';
                             $output .= '<div class="image-hover-overlay"></div>';
                             $output .= '</a></div>';
-                        //}
 
                             $output .= '<div class="blog-meta">';
                             $output .= '<h2 class="blog-title"><a href="' . get_permalink() . '">' . get_the_title() . '</a></h2>';

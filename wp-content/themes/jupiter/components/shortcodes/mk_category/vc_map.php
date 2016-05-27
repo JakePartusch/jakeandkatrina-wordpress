@@ -21,25 +21,29 @@
                 "type" => "dropdown"
             ),
             array(
-                "type" => "multiselect",
-                "heading" => __("Select Specific Categories to Show", "mk_framework"),
-                "param_name" => "specific_categories_post",
-                "value" => '',
-                "options" => mk_get_category_enteries('category', 50),
-                "description" => __("", "mk_framework"),
+                'type'        => 'autocomplete',
+                'heading'     => __( 'Select Specific Categories to Show', 'mk_framework' ),
+                'param_name'  => 'specific_categories_post',
+                'settings' => array(
+                                    'multiple' => true,
+                                    'sortable' => true,
+                                    'unique_values' => true,
+                                    // In UI show results except selected. NB! You should manually check values in backend
+                                ),
+                'description' => __( 'Search for category name to get autocomplete suggestions', 'mk_framework' ),
                 "dependency" => array(
                     'element' => "feed",
                     'value' => array(
                         'post'
                     )
                 )
-            ),
+            ), 
             array(
                 "type" => "textfield",
                 "heading" => __("Select Specific Categories", "mk_framework"),
                 "param_name" => "specific_categories_other",
                 "value" => '',
-                "description" => __("You will need to go to Wordpress Dashboard => Portfolios => Portfolio Categories. In the right hand find Slug column. you will need to add portfolio category slugs in this option. add comma to separate them.", "mk_framework"),
+                "description" => __("You will need to go to Wordpress Dashboard => post type => post type Categories. In the right hand find Slug column and paste them here. add comma to separate them.", "mk_framework"),
                 "dependency" => array(
                     'element' => "feed",
                     'value' => array(
@@ -56,12 +60,12 @@
                 "value" => mk_get_image_sizes(),
                 "type" => "dropdown"
             ),
-            array(
+            /*array(
                "type" => "group_heading",
                "title" => __("Moe Setting?", "mk_framework"),
                "param_name" => "moe_title",
                "style" => "border: 0; font-size: 18px;"
-            ),
+            ),*/
             array(
                 "type" => "toggle",
                 "heading" => __("Show Description", "mk_framework"),

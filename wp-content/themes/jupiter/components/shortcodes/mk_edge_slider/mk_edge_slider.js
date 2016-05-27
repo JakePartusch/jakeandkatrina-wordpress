@@ -1,15 +1,36 @@
 (function($) {
 	'use strict';
 
+    $('.mk-edge-slider').find('video').each(function() {
+        this.pause();
+        this.currentTime = 0;
+    });
+
 	MK.component.EdgeSlider = function( el ) {
 		var self = this,
 			$this = $( el ), 
             $window = $(window),
             $wrapper = $this.parent(),
-			config = $this.data( 'edgeslider-config' );
+			config = $this.data( 'edgeslider-config' ),
+            $nav = $( config.nav ),
+            $prev = $nav.find( '.mk-edge-prev' ),
+            $prevTitle = $prev.find( '.nav-item-caption' ),
+            $prevBg = $prev.find('.edge-nav-bg'),
+            $next = $nav.find( '.mk-edge-next' ),
+            $nextTitle = $next.find( '.nav-item-caption' ),
+            $nextBg = $next.find('.edge-nav-bg'),
+            $navBtns = $nav.find( 'a' ),  
+            $pagination = $( '.swiper-pagination' ),
+            $skipBtn = $( '.edge-skip-slider' ),
+            $opacityLayer = $this.find('.edge-slide-content'),
+            $videos = $this.find('video'),
+            currentSkin = null,
+            currentPoint = null,
+            winH = null,
+            opacity = null,
+            offset = null;
 
         var callbacks = { 
-
     		onInitialize : function( slides ) {
     			self.$slides = $( slides );
 				
@@ -20,6 +41,7 @@
 						image = $slide.find('.mk-section-image').css('background-image') || 
 								$slide.find('.mk-video-section-touch').css('background-image'),
 						bgColor = $slide.find('.mk-section-image').css('background-color');
+
 
 					return {
 						skin: skin,
@@ -34,35 +56,38 @@
 
 				setNavigationContent( 1, self.$slides.length - 1 );
 				setSkin( 0 );
+                // stopVideos();
+                playVideo(0);
 
                 setTimeout( function() {
                     $( '.edge-slider-loading' ).fadeOut( '100' );
                 }, 1000 );
     		},
 
+            onBeforeSlide : function( id ) {
+                
+            },
+
     		onAfterSlide : function( id ) {
-    			var currentId = id;
-
-				var len = self.$slides.length,
-					nextId = ( currentId + 1 === len ) ? 0 : currentId + 1,
-					prevId = ( currentId - 1 === -1 ) ? len - 1 : currentId - 1; 
-
-    			setNavigationContent( nextId, prevId );
-    			setSkin( id );
+    			setNavigationContent( nextFrom(id), prevFrom(id) );
+    			setSkin( id );   
+                stopVideos(); // stop all others if needed
+                playVideo( id );
     		}
     	};
 
 
-    	var $nav = $( config.nav ),
-    		$prev = $nav.find( '.mk-edge-prev' ),
-    		$prevTitle = $prev.find( '.nav-item-caption' ),
-    		$prevBg = $prev.find('.edge-nav-bg'),
-    		$next = $nav.find( '.mk-edge-next' ),
-    		$nextTitle = $next.find( '.nav-item-caption' ),
-    		$nextBg = $next.find('.edge-nav-bg');
+        var nextFrom = function nextFrom(id) {
+            return ( id + 1 === self.$slides.length ) ? 0 : id + 1;
+        };
+
+
+        var prevFrom = function prevFrom(id) {
+            return ( id - 1 === -1 ) ? self.$slides.length - 1 : id - 1;
+        };
+
 
         var setNavigationContent = function( nextId, prevId ) {
-
             if(self.slideContents[ prevId ]) {
         		$prevTitle.text( self.slideContents[ prevId ].title );
         		$prevBg.css( 'background', 
@@ -81,12 +106,7 @@
         };
 
 
-        var $navBtns = $nav.find( 'a' ),  
-        	$pagination = $( '.swiper-pagination' ),
-        	$skipBtn = $( '.edge-skip-slider' ),
-            currentSkin = null;
-
-        var setSkin = function( id ) {  
+        var setSkin = function setSkin( id ) {  
         	currentSkin = self.slideContents[ id ].skin;
 
           	$navBtns.attr('data-skin', currentSkin);
@@ -99,11 +119,23 @@
         };
 
 
-        var currentPoint;
-        var $opacityLayer = $this.find('.edge-slide-content');
-        var winH = null;
-        var opacity = null;
-        var offset = null;
+        var stopVideos = function stopVideos() {
+            $videos.each(function() {
+                this.pause();
+                this.currentTime = 0;
+            });
+        };
+
+
+        var playVideo = function playVideo(id) {
+            var video = self.$slides.eq(id).find('video').get(0);
+            if(video) {
+                video.play();
+                console.log('play video in slide nr ' + id);
+            }
+
+        };
+
 
         var onResize = function onResize() {
             var height = $wrapper.height();

@@ -1,6 +1,7 @@
 <?php
+    $mode = !empty($view_params['sortable_mode']) ? $view_params['sortable_mode'] : 'ajax';
     $data_config[] = 'data-mk-component="Sortable"';
-    $data_config[] = 'data-sortable-config=\'{"container":"'.$view_params['container'].'", "item":"'.$view_params['item'].'"}\'';
+    $data_config[] = 'data-sortable-config=\'{"container":"'.$view_params['container'].'", "item":"'.$view_params['item'].'", "mode":"'.$mode.'"}\'';
 ?>
 
 <?php $requested_term = isset($_REQUEST['term']) ? $_REQUEST['term'] : ''; ?> 

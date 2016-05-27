@@ -9,7 +9,7 @@ $mk_artbees_products = new mk_artbees_products();
 <div class="wp-install-template cp-pane">
 	<?php $mk_artbees_products->install_template_warnings(); ?>
 	<div class="install-template">
-	<?php if ($mk_artbees_products->is_verified_artbees_customer()) : ?>
+	<?php if ($mk_artbees_products->is_api_key_exists()) : ?>
 
 			<div class="template-uploader">
 				<h3>Install Templates</h3>
@@ -26,7 +26,7 @@ $mk_artbees_products = new mk_artbees_products();
 			</div>
 
 		<?php else : 
-				echo mk_get_control_panel_view('register-product-popup', true, array('message' => 'In order to install new templates you must resgiter theme.<br> <a target="_blank" href="https://artbees.net/themes/docs/how-to-register-theme/">Learn how to register</a>')); 
+				echo mk_get_control_panel_view('register-product-popup', true, array('message' => 'In order to install new templates you must register theme.<br> <a target="_blank" href="https://artbees.net/themes/docs/how-to-register-theme/">Learn how to register</a>')); 
 			endif;
 		?>
 		
@@ -46,7 +46,7 @@ $mk_artbees_products = new mk_artbees_products();
 			<strong>Any problem? <a href="https://artbees.net/themes/docs/how-to-install-templates/" target="_blank">View the tutorial here</a></strong>
 			<div class="how-to-video-list">
 				<div class="video-item">
-					<a target="_blank" href="https://www.youtube.com/watch?v=8V7LSmCvf9g">
+					<a target="_blank" href="https://www.youtube.com/watch?v=ZAu2bgcp3uQ">
 						<img src="<?php echo THEME_CONTROL_PANEL_ASSETS; ?>/images/install-template-tuts-video.jpg" alt="">
 						<i class="ic-play"></i>
 					</a>

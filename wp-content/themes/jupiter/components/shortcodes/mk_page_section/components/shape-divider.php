@@ -173,7 +173,7 @@ if($style !== 'speech-bottom' && $style !== 'speech-top') {
 } else {
 	$shape_container->find('.shape')->append('
 		<div class="speech-left"></div><div class="speech-right"></div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	');
 }
 

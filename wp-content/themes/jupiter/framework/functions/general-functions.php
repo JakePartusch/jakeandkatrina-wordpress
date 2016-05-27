@@ -90,51 +90,7 @@ if (!function_exists('mk_flush_rules')) {
     add_action('wp_loaded', 'mk_flush_rules');
 }
 
-/*
-Generates dummy images if
-*/
-function mk_image_generator($image, $width, $height, $crop = 'true') {
 
-    $testing_site = isset($_GET['testing']) ? esc_html($_GET['testing']) : false;
-
-    $default = includes_url() . 'images/media/default.png';
-    if (($image == $default) || empty($image)) {
-
-        if($testing_site == 1) {
-            $thumbnail_number = 4;
-        } else {
-            $thumbnail_number = mt_rand(1, 7);
-        }
-        
-        $default_url = THEME_IMAGES . '/dummy-images/dummy-' . $thumbnail_number . '.png';
-        
-        if (!empty($width) && !empty($height)) {
-            return bfi_thumb($default_url, array(
-                'width' => $width,
-                'height' => $height,
-                'crop' => true
-            ));
-            return $image;
-        }
-        return $default_url;
-    } 
-    else {
-        if (!empty($width) && !empty($height) && $crop == 'true') {
-            return bfi_thumb($image, array(
-                'width' => $width,
-                'height' => $height,
-                'crop' => true
-            ));
-        }
-        return $image;
-    }
-}
-
-function mk_is_default_thumbnail($image = false) {
-    $default = includes_url() . 'images/media/default.png';
-    if ($default == $image) return true;
-    else return false;
-}
 
 /*
 Uses get_the_excerpt() to print an excerpt by specifying a maximium number of characters.
@@ -351,116 +307,155 @@ if (!function_exists('mk_count_content_width')) {
  *
  */
 
-function mk_post_nav($same_category = true, $taxonomy = 'category') {
-    
-    global $mk_options;
-    
-    if (is_singular('portfolio') && $mk_options['portfolio_next_prev'] != 'true') return false;
-    
-    if (is_singular('post') && $mk_options['blog_prev_next'] != 'true') return false;
-    
-    $options = array();
-    $options['same_category'] = $same_category;
-    $options['excluded_terms'] = '';
-    
-    $options['type'] = get_post_type();
-    $options['taxonomy'] = $taxonomy;
-    
-    if (!is_singular() || is_post_type_hierarchical($options['type'])) $options['is_hierarchical'] = true;
-    if ($options['type'] === 'topic' || $options['type'] === 'reply') $options['is_bbpress'] = true;
-    
-    $options = apply_filters('mk_post_nav_settings', $options);
-    if (!empty($options['is_bbpress']) || !empty($options['is_hierarchical'])) return;
-    
-    $entries['prev'] = get_previous_post($options['same_category'], $options['excluded_terms'], $options['taxonomy']);
-    $entries['next'] = get_next_post($options['same_category'], $options['excluded_terms'], $options['taxonomy']);
-    
-    $entries = apply_filters('mk_post_nav_entries', $entries, $options);
-    $output = "";
-    
-    foreach ($entries as $key => $entry) {
-        if (empty($entry)) continue;
+if(!function_exists('mk_get_single_post_prev_next')) {
+    function mk_get_single_post_prev_next() {
         
-        $post_type = get_post_type($entry->ID);
+        global $mk_options;
         
-        $icon = $post_image = "";
-        $link = get_permalink($entry->ID);
-        /* Added image-size-150x150 image size in functions.php to have exact 150px * 150px thumbnail size */
-        $image = get_the_post_thumbnail($entry->ID, 'image-size-150x150');
-        $class = $image ? "with-image" : "without-image";
-        $icon = ($key == 'prev') ? '<i class="mk-icon-long-arrow-left"></i>' : '<i class="mk-icon-long-arrow-right"></i>';
-        $output.= '<a class="mk-post-nav mk-post-' . $key . ' ' . $class . '" href="' . $link . '">';
+        if (is_singular('portfolio') && $mk_options['portfolio_next_prev'] != 'true') return false;
         
-        $output.= '<span class="pagnav-wrapper">';
-        $output.= '<span class="pagenav-top">';
+        if (is_singular('post') && $mk_options['blog_prev_next'] != 'true') return false;
+
+        if (is_singular('product') && $mk_options['woo_single_prev_next'] == 'false') return false;
         
-        $icon = '<span class="mk-pavnav-icon">' . $icon . '</span>';
+        $options = array();
         
-        if ($image) {
-            $post_image = '<span class="pagenav-image">' . $image . '</span>';
+        $options['excluded_terms'] = '';
+
+        $options['type'] = get_post_type();
+
+        switch ($options['type']) {
+            case 'post':
+                $options['taxonomy'] = 'category';
+                $options['in_same_term'] = isset($mk_options['blog_prev_next_same_category']) ? ($mk_options['blog_prev_next_same_category'] === 'true') : false;
+                break;
+            case 'portfolio':
+                $options['taxonomy'] = 'portfolio_category';
+                $options['in_same_term'] = isset($mk_options['portfolio_prev_next_same_category']) ? ($mk_options['portfolio_prev_next_same_category'] === 'true') : false;
+                break;    
+            case 'news':
+                $options['taxonomy'] = 'news_category';
+                $options['in_same_term'] = false;
+                break;        
+            case 'product':
+                $options['taxonomy'] = 'product_cat';
+                $options['in_same_term'] = isset($mk_options['woo_prev_next_same_category']) ? ($mk_options['woo_prev_next_same_category'] === 'true') : false;
+                break;        
+            
+            default:
+                $options['taxonomy'] = 'category';
+                $options['in_same_term'] = false;
+                break;
         }
+
         
-        $output.= $key == 'next' ? $icon . $post_image : $post_image . $icon;
-        $output.= "</span>";
+        if (!is_singular() || is_post_type_hierarchical($options['type'])) $options['is_hierarchical'] = true;
+        if ($options['type'] === 'topic' || $options['type'] === 'reply') $options['is_bbpress'] = true;
         
-        $output.= '<div class="nav-info-container">';
-        $output.= '<span class="pagenav-bottom">';
+        $options = apply_filters('mk_post_nav_settings', $options);
+        if (!empty($options['is_bbpress']) || !empty($options['is_hierarchical'])) return;
         
-        $output.= '<span class="pagenav-title">' . get_the_title($entry->ID) . '</span>';
+        $entries['prev'] = get_adjacent_post($options['in_same_term'], $options['excluded_terms'], true, $options['taxonomy']);
+        $entries['next'] = get_adjacent_post($options['in_same_term'], $options['excluded_terms'], false, $options['taxonomy']);
+
         
-        if ($post_type == 'post') {
-            $cats = get_the_category($entry->ID);
-            foreach ($cats as $cat) {
-                $category[] = $cat->name;
+        
+        $entries = apply_filters('mk_post_nav_entries', $entries, $options);
+        $output = "";
+        
+        foreach ($entries as $key => $entry) {
+            if (empty($entry)) continue;
+            
+            $post_type = get_post_type($entry->ID);
+            
+            $icon = $post_image = "";
+            $link = get_permalink($entry->ID);
+            /* Added image-size-150x150 image size in functions.php to have exact 150px * 150px thumbnail size */
+            $image = get_the_post_thumbnail($entry->ID, 'image-size-150x150');
+            $class = $image ? "with-image" : "without-image";
+            $icon = ($key == 'prev') ? '<i class="mk-icon-long-arrow-left"></i>' : '<i class="mk-icon-long-arrow-right"></i>';
+            $output.= '<a class="mk-post-nav mk-post-' . $key . ' ' . $class . '" href="' . $link . '">';
+            
+            $output.= '<span class="pagnav-wrapper">';
+            $output.= '<span class="pagenav-top">';
+            
+            $icon = '<span class="mk-pavnav-icon">' . $icon . '</span>';
+            
+            if ($image) {
+                $post_image = '<span class="pagenav-image">' . $image . '</span>';
             }
-            $output.= '<span class="pagenav-category">' . implode(', ', $category) . '</span>';
-            $category = array();
-        } 
-        elseif ($post_type == 'portfolio') {
-            $terms = get_the_terms($entry->ID, 'portfolio_category');
-            $terms_slug = array();
-            $terms_name = array();
-            if (is_array($terms)) {
-                foreach ($terms as $term) {
-                    $terms_name[] = $term->name;
+            
+            $output.= $key == 'next' ? $icon . $post_image : $post_image . $icon;
+            $output.= "</span>";
+            
+            $output.= '<div class="nav-info-container">';
+            $output.= '<span class="pagenav-bottom">';
+            
+            $output.= '<span class="pagenav-title">' . get_the_title($entry->ID) . '</span>';
+            
+            if ($post_type == 'post') {
+                $cats = get_the_category($entry->ID);
+                foreach ($cats as $cat) {
+                    $category[] = $cat->name;
                 }
-            }
-            $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
-            $terms_name = array();
-        } 
-        elseif ($post_type == 'product') {
-            $terms = get_the_terms($entry->ID, 'product_cat');
-            $terms_slug = array();
-            $terms_name = array();
-            if (is_array($terms)) {
-                foreach ($terms as $term) {
-                    $terms_name[] = $term->name;
+                $output.= '<span class="pagenav-category">' . implode(', ', $category) . '</span>';
+                $category = array();
+            } 
+            elseif ($post_type == 'portfolio') {
+                $terms = get_the_terms($entry->ID, 'portfolio_category');
+                $terms_slug = array();
+                $terms_name = array();
+                if (is_array($terms)) {
+                    foreach ($terms as $term) {
+                        $terms_name[] = $term->name;
+                    }
                 }
-            }
-            $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
-            $terms_name = array();
-        } 
-        elseif ($post_type == 'news') {
-            $terms = get_the_terms($entry->ID, 'news_category');
-            $terms_slug = array();
-            $terms_name = array();
-            if (is_array($terms)) {
-                foreach ($terms as $term) {
-                    $terms_name[] = $term->name;
+                $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
+                $terms_name = array();
+            } 
+            elseif ($post_type == 'product') {
+                $terms = get_the_terms($entry->ID, 'product_cat');
+                $terms_slug = array();
+                $terms_name = array();
+                if (is_array($terms)) {
+                    foreach ($terms as $term) {
+                        $terms_name[] = $term->name;
+                    }
                 }
+                $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
+                $terms_name = array();
+            } 
+            elseif ($post_type == 'news') {
+                $terms = get_the_terms($entry->ID, 'news_category');
+                $terms_slug = array();
+                $terms_name = array();
+                if (is_array($terms)) {
+                    foreach ($terms as $term) {
+                        $terms_name[] = $term->name;
+                    }
+                }
+                $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
+                $terms_name = array();
             }
-            $output.= '<span class="pagenav-category">' . implode(', ', $terms_name) . '</span>';
-            $terms_name = array();
+            $output.= "</span>";
+            $output.= "</div>";
+            $output.= "</span>";
+            $output.= "</a>";
         }
-        $output.= "</span>";
-        $output.= "</div>";
-        $output.= "</span>";
-        $output.= "</a>";
+        echo $output;
     }
-    echo $output;
+
+    add_action('wp_footer', 'mk_get_single_post_prev_next');
 }
 
-add_action('wp_footer', 'mk_post_nav');
+
+
+
+
+
+
+
+
 
 function mk_get_fontfamily($element_name, $id, $font_family, $font_type) {
     $output = '';
@@ -894,7 +889,18 @@ function mk_purge_cache() {
     }
 }
 
-function mk_purge_cache_actions() {
+/**
+ * Deletes cache files and transients
+ *
+ * @param bool $remove
+ *
+ * @author      Bob Ulusoy & Uğur Mirza ZEYREK
+ * @copyright   Artbees LTD (c)
+ * @link        http://artbees.net
+ * @since       Version 5
+ * @last_update Version 5.1
+ */
+function mk_purge_cache_actions($remove = false) {
     global $wpdb;
     
     $wpdb->query($wpdb->prepare("
@@ -914,6 +920,11 @@ function mk_purge_cache_actions() {
     $static->delete_global_assets(true);
     $static->delete_transient_mk_getimagesize();
     $static->delete_transient_mk_critical_path_css();
+    $static->check_transient_mk_assets_versions();
+    Mk_SVG_Icons::check_transient_svg_icons_versions();
+    if($remove or isset($_GET["purge_mk_assets"]))
+    $static->delete_transient_mk_assets();
+
 }
 
 
@@ -1115,6 +1126,7 @@ function mk_scandir($path, $mode, $relative_path = '') {
     if ('/' == $relative_path) $relative_path = '';
     
     $results = scandir($path, $mode);
+    $results = array_diff($results, array('.', '..'));
     
     return $results;
 }
@@ -1191,4 +1203,16 @@ if (!function_exists('mk_base_url')) {
 
         return $base_url;
     }
+}
+
+
+
+// Skype shortcode removed from theme and this function will prevent the shortcode text appear in frontend
+if (!function_exists('mk_skype_shortcode')) {
+    function mk_skype_shortcode() {
+
+        return '';
+
+    }
+    add_shortcode('mk_skype', 'mk_skype_shortcode');
 }

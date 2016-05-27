@@ -6,8 +6,6 @@ include( $path . '/config.php' );
 
 $id = uniqid();
 
-require_once (THEME_INCLUDES . "/bfi_thumb.php");
-
 $cat = !empty($categories) ? $categories : $cat;
 $query = mk_wp_query(array(
             'post_type' => 'portfolio',
@@ -31,7 +29,7 @@ $loop = $query['wp_query'];
         
         <h3 class="mk-fancy-title pattern-style"><span><?php echo $title; ?></span>
         <a href="<?php echo get_permalink( $view_all ); ?>" class="view-all page-bg-color"><?php _e( 'VIEW ALL', 'mk_framework' ); ?></a></h3>
-        <div class="clear"></div>
+        <div class="clearfix"></div>
         <?php 
         $direction_vav = 'true';
     }

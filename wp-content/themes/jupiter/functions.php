@@ -15,7 +15,7 @@ class Theme
     function __construct($check = false)
     {
         if($check) {
-        $this->theme_requirement_check();
+            $this->theme_requirement_check();
         }
     }
 
@@ -51,7 +51,6 @@ class Theme
             'widgets'
         ));
 
-        add_filter('wp_calculate_image_sizes', array(&$this,'mk_content_image_sizes_attr'), 10, 2);
     }
     
     function constants($options) {
@@ -61,14 +60,24 @@ class Theme
 
         if (defined("ICL_LANGUAGE_CODE")) {
             $lang = "_" . ICL_LANGUAGE_CODE;
-        } 
+        }
         else {
             $lang = "";
         }
 
-        define("THEME_OPTIONS", $options["theme_name"] . '_options' . $lang);
-        define("THEME_OPTIONS_BUILD", $options["theme_name"] . '_options_build' . $lang);
 
+        /* Use this constant in child theme functions.php to unify theme options across all languages in WPML
+        *  add define('WPML_UNIFY_THEME_OPTIONS', true);
+        */
+        if(defined('WPML_UNIFY_THEME_OPTIONS')) {
+            $lang = "";
+        }
+
+
+        define("THEME_OPTIONS", $options["theme_name"] . '_options' . $lang);
+
+
+        define("THEME_OPTIONS_BUILD", $options["theme_name"] . '_options_build' . $lang);
         define("IMAGE_SIZE_OPTION", THEME_NAME . '_image_sizes');
         define("THEME_SLUG", $options["theme_slug"]);
         define("THEME_STYLES_SUFFIX", "/assets/stylesheet");
@@ -85,6 +94,7 @@ class Theme
         define("THEME_WIDGETS", THEME_FRAMEWORK . "/widgets");
         define("THEME_HELPERS", THEME_FRAMEWORK . "/helpers");
         define("THEME_FUNCTIONS", THEME_FRAMEWORK . "/functions");
+        define("THEME_PLUGIN_INTEGRATIONS", THEME_FRAMEWORK . "/plugin-integrations");
         define('THEME_METABOXES', THEME_FRAMEWORK . '/metaboxes');
         define('THEME_POST_TYPES', THEME_FRAMEWORK . '/custom-post-types');
         
@@ -122,6 +132,8 @@ class Theme
         add_theme_support('menus');
         add_theme_support('automatic-feed-links');
         add_theme_support('editor-style');
+        add_theme_support('post-thumbnails');
+        add_theme_support('yoast-seo-breadcrumbs');
         
         register_nav_menus(array(
             'primary-menu' => __('Primary Navigation', "mk_framework") ,
@@ -139,42 +151,7 @@ class Theme
             'side-dashboard-menu' => __('Side Dashboard Navigation', "mk_framework") ,
             'fullscreen-menu' => __('Full Screen Navigation', "mk_framework")
         ));
-        
-        add_theme_support('post-thumbnails');
-        
-        add_theme_support('yoast-seo-breadcrumbs');
-        
-        add_image_size('image-size-150x150', 150, 150, true);
-        add_image_size('image-size-550x550', 550, 550, true);
 
-        add_image_size('photo-album-thumbnail-small', 150, 100, true);
-        add_image_size('photo-album-thumbnail-square', 500, 500, true);
-        
-        add_image_size('employees-large', 500, 500, true);
-        add_image_size('employees-small', 225, 225, true);
-        
-        add_image_size('blog-magazine-thumbnail', 200, 200, true);
-        
-        add_image_size('woocommerce-recent-carousel', 330, 260, false);
-        
-        add_image_size('blog-carousel', 245, 180, true);
-        add_image_size('blog-showcase', 260, 180, true);
-        
-        add_image_size('portfolio-x_x', 300, 300, true);
-        add_image_size('portfolio-two_x_x', 600, 300, true);
-        add_image_size('portfolio-four_x_x', 1200, 300, true);
-        add_image_size('portfolio-x_two_x', 300, 600, true);
-        add_image_size('portfolio-two_x_two_x', 600, 600, true);
-        add_image_size('portfolio-three_x_two_x', 900, 600, true);
-        add_image_size('portfolio-four_x_two_x', 1200, 600, true);
-        
-        $image_sizes = get_option(IMAGE_SIZE_OPTION);
-        if (!empty($image_sizes)) {
-            foreach ($image_sizes as $size) {
-                $crop = (isset($size['size_c']) && $size['size_c'] == 'on') ? true : false;
-                add_image_size($size['size_n'], $size['size_w'], $size['size_h'], $crop);
-            }
-        }
     }
     function post_types() {
         require_once (THEME_POST_TYPES . '/custom_post_types.helpers.class.php');
@@ -186,23 +163,21 @@ class Theme
         include_once (ABSPATH . 'wp-admin/includes/plugin.php');
         
         include_once (THEME_ADMIN . '/general/general-functions.php');
-
-        require_once (THEME_INCLUDES . "/tgm-plugin-activation/request-plugins.php");
         require_once (THEME_INCLUDES . "/phpquery/phpQuery.php");
         require_once (THEME_INCLUDES . "/otf-regen-thumbs/otf-regen-thumbs.php");
-        require_once (THEME_INCLUDES . "/bfi_thumb.php");
 
         require_once (THEME_FUNCTIONS . "/general-functions.php");
         require_once (THEME_FUNCTIONS . "/ajax-search.php");
-        require_once (THEME_FUNCTIONS . "/vc-integration.php");
         require_once (THEME_FUNCTIONS . "/post-pagination.php");
         
         require_once (THEME_FUNCTIONS . "/enqueue-front-scripts.php");
         require_once (THEME_GENERATORS . '/sidebar-generator.php');
         require_once (THEME_FUNCTIONS . "/dynamic-styles.php");
-        require_once (THEME_FUNCTIONS . "/mk-woocommerce.php");
         
-        require_once (THEME_CONTROL_PANEL . "/logic/functions.php");
+        require_once (THEME_PLUGIN_INTEGRATIONS . "/woocommerce/init.php");
+        require_once (THEME_PLUGIN_INTEGRATIONS . "/visual-composer/init.php");
+        
+        
         
         require_once locate_template("views/global/love-post.php");
         require_once locate_template("framework/helpers/load-more.php");
@@ -211,6 +186,9 @@ class Theme
         require_once locate_template("components/shortcodes/mk_products/quick-view-ajax.php");
     }
     function helpers() {
+        require_once (THEME_HELPERS . "/svg-icons.php");
+        require_once (THEME_HELPERS . "/image-resize.php");
+        require_once (THEME_HELPERS . "/template-part-helpers.php");
         require_once (THEME_HELPERS . "/global.php");
         require_once (THEME_HELPERS . "/wp_head.php");
         require_once (THEME_HELPERS . "/wp_footer.php");
@@ -218,27 +196,11 @@ class Theme
         require_once (THEME_HELPERS . "/wp_query.php");
         require_once (THEME_HELPERS . "/main-nav-walker.php");
         require_once (THEME_HELPERS . "/send-email.php");
+        require_once (THEME_HELPERS . "/captcha.php");
     }
     
     function add_metaboxes() {
         include_once (THEME_GENERATORS . '/metabox-generator.php');
-        include_once (THEME_METABOXES . '/metabox-posts.php');
-        include_once (THEME_METABOXES . '/metabox-employee.php');
-        include_once (THEME_METABOXES . '/metabox-slideshow.php');
-        include_once (THEME_METABOXES . '/metabox-clients.php');
-        include_once (THEME_METABOXES . '/metabox-testimonials.php');
-        include_once (THEME_METABOXES . '/metabox-timeline.php');
-        include_once (THEME_METABOXES . '/metabox-pricing.php');
-        include_once (THEME_METABOXES . '/metabox-news.php');
-        include_once (THEME_METABOXES . '/metabox-edge.php');
-        include_once (THEME_METABOXES . '/metabox-portfolios.php');
-        include_once (THEME_METABOXES . '/metabox-skinning.php');
-        include_once (THEME_METABOXES . '/metabox-animated-columns.php');
-        include_once (THEME_METABOXES . '/metabox-tab-slider.php');
-        include_once (THEME_METABOXES . '/metabox-pages.php');
-        include_once (THEME_METABOXES . '/metabox-footer-widgets.php');
-        include_once (THEME_METABOXES . '/metabox-tax.php');
-        include_once (THEME_METABOXES . '/metabox-gallery.php');
     }
     
     function theme_activated() {
@@ -255,10 +217,14 @@ class Theme
     
     function admin() {
         if (is_admin()) {
+            require_once (THEME_CONTROL_PANEL . "/logic/functions.php");
+            require_once (THEME_CONTROL_PANEL . "/logic/updates-class.php");
             include_once (THEME_ADMIN . '/general/mega-menu.php');
-            include_once (THEME_ADMIN . '/general/backend-enqueue-scripts.php');
+            include_once (THEME_ADMIN . '/general/enqueue-assets.php');
             include_once (THEME_ADMIN . '/theme-options/options-save.php');
+            require_once (THEME_INCLUDES . "/tgm-plugin-activation/request-plugins.php");
         }
+        require_once (THEME_CONTROL_PANEL . "/logic/tracking.php");
     }
     function language() {
         
@@ -279,8 +245,6 @@ class Theme
         add_submenu_page(THEME_NAME, __('Install Templates', 'mk_framework') , __('Install Templates', 'mk_framework') , 'edit_theme_options', 'theme-templates', array(&$this,
             'theme_templates'
         ));
-        
-        /*add_submenu_page(THEME_NAME, __('Add-ons', 'mk_framework'), __('Add-ons', 'mk_framework'), 'edit_theme_options', 'theme-addon',array(&$this,'theme_addons'));*/
 
         add_submenu_page(THEME_NAME, __('Image Sizes', 'mk_framework') , __('Image Sizes', 'mk_framework') , 'edit_posts', 'theme-image-size', array(&$this,
             'image_size'
@@ -290,6 +254,12 @@ class Theme
         ));
         add_submenu_page(THEME_NAME, __('Icon Library', 'mk_framework') , __('Icon Library', 'mk_framework') , 'edit_posts', 'icon-library', array(&$this,
             'icon_library'
+        ));
+        add_submenu_page(THEME_NAME, __('Updates', 'mk_framework') , __('Updates', 'mk_framework') , 'edit_posts', 'theme-updates', array(&$this,
+            'theme_updates'
+        ));
+        add_submenu_page(THEME_NAME, __('Announcements', 'mk_framework') , __('Announcements', 'mk_framework') , 'edit_posts', 'theme-announcements', array(&$this,
+            'theme_annoucements'
         ));
         add_submenu_page(THEME_NAME, __('Theme Options', 'mk_framework') , __($theme_options_menu_text, 'mk_framework') , 'edit_theme_options', 'theme_options', array(&$this,
             'theme_options'
@@ -306,6 +276,14 @@ class Theme
     
     function theme_status() {
         include_once (THEME_CONTROL_PANEL . '/logic/theme-status.php');
+    }
+
+    function theme_annoucements() {
+        include_once (THEME_CONTROL_PANEL . '/logic/theme-announcements.php');
+    }
+
+    function theme_updates() {
+        include_once (THEME_CONTROL_PANEL . '/logic/theme-updates.php');
     }
     
     function image_size() {
@@ -327,6 +305,7 @@ class Theme
     function theme_register() {
         include_once (THEME_CONTROL_PANEL . '/logic/theme-register.php');
     }
+    
     
     /**
      * This function maintains the table for actively used theme components.
@@ -365,30 +344,6 @@ class Theme
         }
     }
     
-    /**
-     * Add custom image sizes attribute to enhance responsive image functionality
-     * for content images
-     *
-     * @since Jupiter v5.1
-     *
-     * @param string $sizes A source size value for use in a 'sizes' attribute.
-     * @param array  $size  Image size. Accepts an array of width and height
-     *                      values in pixels (in that order).
-     * @return string A source size value for use in a content image 'sizes' attribute.
-     */
-    function mk_content_image_sizes_attr($sizes, $size) {
-        $width = $size[0];
-        840 <= $width && $sizes = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 1362px) 62vw, 840px';
-        if ('page' === get_post_type()) {
-            840 > $width && $sizes = '(max-width: ' . $width . 'px) 85vw, ' . $width . 'px';
-        } 
-        else {
-            840 > $width && 600 <= $width && $sizes = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 984px) 61vw, (max-width: 1362px) 45vw, 600px';
-            600 > $width && $sizes = '(max-width: ' . $width . 'px) 85vw, ' . $width . 'px';
-        }
-        return $sizes;
-    }
-
 
     /**
      * Compatibility check for hosting php version.

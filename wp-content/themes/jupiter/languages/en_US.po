@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Jupiter v5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-02 09:46+0200\n"
-"PO-Revision-Date: 2016-03-15 14:57+0200\n"
+"PO-Revision-Date: 2016-03-28 16:59+0300\n"
 "Last-Translator: Bob Alpakar <bob@alpakar.com>\n"
 "Language-Team: Artbees <info@artbees.net>\n"
 "Language: en_US\n"
@@ -18,17 +18,6 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Textdomain-Support: yes\n"
 
-#: assets/js/plugins/async/tweenmax.js:15
-msgid "marginTop,marginRight,marginBottom,marginLeft"
-msgstr ""
-
-#: assets/js/plugins/async/tweenmax.js:15
-msgid "paddingTop,paddingRight,paddingBottom,paddingLeft"
-msgstr ""
-
-#: assets/js/plugins/async/tweenmax.js:15
-msgid "borderTopWidth,borderRightWidth,borderBottomWidth,borderLeftWidth"
-msgstr ""
 
 # @ mk_framework
 #: bbpress/bbpress-functions.php:67
@@ -4801,7 +4790,7 @@ msgstr ""
 
 # @ mk_framework
 #: components/shortcodes/mk_faq/components/sortable.php:14
-#: views/global/loop-sortable.php:19
+#: views/global/loop-sortable.php:31
 msgid "All"
 msgstr ""
 

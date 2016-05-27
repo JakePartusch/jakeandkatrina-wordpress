@@ -378,6 +378,9 @@ Mk_Static_Files::addGlobalStyle("
 	  .trans-header .bg-true.light-skin:not(.a-sticky) .mk-vm-menuwrapper li.mk-vm-back:after {
 	    color: #fff !important;
 	  }
+	  .trans-header .bg-true.light-skin:not(.a-sticky) .mk-svg-icon { 
+	  	fill: #fff !important; 
+	  }
 	  .trans-header .bg-true.light-skin:not(.a-sticky) .mk-css-icon-menu div {
 	    background-color: #fff !important;
 	  }
@@ -436,6 +439,9 @@ Mk_Static_Files::addGlobalStyle("
 	  .trans-header .bg-true.dark-skin:not(.a-sticky) .mk-vm-menuwrapper li > a:after, 
 	  .trans-header .bg-true.dark-skin:not(.a-sticky) .mk-vm-menuwrapper li.mk-vm-back:after {
 	    color: #222 !important;
+	  }
+	  .trans-header .bg-true.dark-skin:not(.a-sticky) .mk-svg-icon { 
+	  	fill: #222 !important; 
 	  }
 	  .trans-header .bg-true.dark-skin:not(.a-sticky) .menu-hover-style-1 .main-navigation-ul > li.dropdownOpen > a.menu-item-link,
 	  .trans-header .bg-true.dark-skin:not(.a-sticky) .menu-hover-style-1 .main-navigation-ul > li.active > a.menu-item-link,

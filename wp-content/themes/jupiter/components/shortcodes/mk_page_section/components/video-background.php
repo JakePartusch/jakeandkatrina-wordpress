@@ -1,7 +1,6 @@
 <?php
 
-$has_parallax 		= ($view_params['parallax'] == 'true');
-
+$has_parallax 	= ($view_params['parallax'] == 'true');
 $layer_config[] = ( $has_parallax ) ? 'data-mk-component="Parallax"' : '';
 $layer_config[] = ( $has_parallax ) ? 'data-parallax-config=\'{"speed" : ' . floatval($view_params['speed_factor']) . ' }\'' : '';
 

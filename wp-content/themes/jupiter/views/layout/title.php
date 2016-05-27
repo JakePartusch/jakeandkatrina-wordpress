@@ -120,7 +120,7 @@ if (function_exists('is_woocommerce') && is_woocommerce()) {
 /* Loads Search Page Headings */
 if (is_search()) {
     $title     = $mk_options['search_page_title'];
-    $allsearch = new WP_Query("s=" . get_search_query() . "&showposts=-1");
+    $allsearch = new WP_Query("s=" . get_search_query() . "&posts_per_page=1");
     $count     = $allsearch->post_count;
     wp_reset_query();
     $subtitle = $count . ' ' . sprintf(__('Search Results for: "%s"', 'mk_framework'), stripslashes(strip_tags(get_search_query())));

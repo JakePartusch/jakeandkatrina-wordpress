@@ -22,7 +22,6 @@ if (!function_exists('mk_wp_query')) {
             'post_type' => $post_type,
             'posts_per_page' => (int)$count,
             'suppress_filters' => 0,
-            'post_status' => 'publish'
         );
         
         if ($post_type == 'attachment') {

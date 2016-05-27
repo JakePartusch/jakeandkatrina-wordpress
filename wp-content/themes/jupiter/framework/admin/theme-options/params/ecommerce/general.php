@@ -38,16 +38,6 @@ $ecommerce_section[] = array(
             "type" => "range"
         ) ,
         array(
-            "name" => __("Shop Loop Image Quality", "mk_framework") ,
-            "id" => "woo_image_quality",
-            "default" => "crop",
-            "options" => array(
-                "1" => __("Normal Size", "mk_framework") ,
-                "2" => __("Retina Quality", "mk_framework") ,
-            ) ,
-            "type" => "dropdown"
-        ) ,
-        array(
             "name" => __("Shop Loop Image Size", "mk_framework") ,
             "id" => "woo_loop_image_size",
             "default" => "crop",
@@ -69,6 +59,14 @@ $ecommerce_section[] = array(
             "default" => 'true',
             "type" => "toggle"
         ) ,
+        array(
+            "name" => __("Show Shopping Cart For Mobile devices", "mk_framework") ,
+            "desc" => __("You can turn on/off the floating shopping cart link for mobile and tablet devices.", "mk_framework") ,
+            "id" => "add_cart_responsive",
+            "default" => 'true',
+            "type" => "toggle"
+        ) ,
+        
         array(
             "name" => __("Excerpt For Products Loop", "mk_framework") ,
             "desc" => __("If you would like to show some small description for products loop enable this option.", "mk_framework") ,
